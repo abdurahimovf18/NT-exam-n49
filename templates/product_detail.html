@@ -1,0 +1,102 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+    <main class="d-flex justify-content-center gap-5 m-auto" style="height: 100dvh; width: 100vw;">
+
+        <div class="w-25 h-100 d-flex justify-content-start align-items-start mt-5">
+            <img
+            style="max-width: 100%; max-height: 100%;" 
+            src="{{ product.image.url }}" 
+            alt="Product Image" >
+        </div>
+
+        <div class="w-50  mt-5">
+
+            <h1 style="font-size: 3.5rem;">{{ product.name }}</h1>
+            <p class="d-flex justify-content-start align-items-start flex-wrap h-3 fs-4">
+                {{ product.description }}
+            </p>
+
+            <form 
+            id="product-form"
+            class="d-flex justify-content-center align-items-center gap-1 flex-column"
+            style="width: max-content;"
+            action="{% url 'products:change_cart_quantity' %}" 
+            method="post">
+            {% csrf_token %}
+                <div class="flex-nowrap d-flex justify-content-center align-items-center gap-1">
+                    <input type="hidden" id="form-input" name="quantity" value="{{ product_quantity }}">
+                    <input type="hidden" name="product_id", value="{{ product.pk }}">
+                    <input type="button" class="form-btn btn btn-success fs-3" value="-">
+                    <p id="form-input-shadow"
+                    class="d-flex justify-content-center align-items-center fs-3 p-2 text-white"
+                    style="width: 4rem; height: 120%; background-color: grey; margin-bottom: 0;">{{ product_quantity }}</p>
+
+                    <input type="button" class="form-btn btn btn-success fs-3" value="+">
+                </div>
+                <button 
+                class="w-100 btn-primary btn" 
+                type="submit"
+                >Add to cart</button>
+            </form>
+
+        </div>
+
+    </main>
+
+    <script>
+        const startInputVal = Number(getInput().value)
+        
+        const form = document.getElementById("product-form")
+
+        form.addEventListener("submit", e => {
+            e.preventDefault()
+            
+            const distance = Number(getInput().value) - startInputVal
+            
+            const input = getInput()
+            input.value = distance
+            
+            form.submit()
+
+        })
+
+
+        function getInput() {
+            const input = document.getElementById("form-input");
+            return input
+        }
+
+        function reRender(val) {
+            const rendererTag = document.getElementById("form-input-shadow")
+            rendererTag.innerHTML = val
+        }
+
+        function addToInputValue(val) {
+            const input = getInput()
+            input.value -= -Number(val)
+            input.value = Number(input.value)
+            
+            reRender(input.value)
+        }
+
+        buttons = document.querySelectorAll(".form-btn");
+
+        buttons.forEach(element => {
+            element.addEventListener("click", e => {
+                e.preventDefault()
+                const changer = e.target.value === "-" ? -1 : 1
+                
+                const input = getInput()
+
+                if (input.value - -changer > -1) {
+                    addToInputValue(changer)
+                }
+            })
+        });
+
+    </script>
+
+{% endblock content %}

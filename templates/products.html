@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+<main class="vh-100 bg-body-tertiary">
+	<div class="container m-auto mt-5 row gap-2 justify-content-center">
+		<h1 class="d-flex justify-content-center mb-10">{{ category }}</h1>
+		{% for object in objects %}
+			<div class="card col-3 p-0">
+				<img
+					class="card-img-top"
+					src="{{ object.image.url }}"
+					alt="Card image cap"
+				/>
+				<div class="card-body">
+					<h3>
+						<a class="text-decoration-none" href="{% url 'products:product_detail' pk=object.pk %}">{{ object.name }}</a>
+					</h3>
+					<p class="card-text">
+						{{ object.description }}
+					</p>
+					<div class="d-flex flex-column gap-2">
+						{% if object.last_price %}
+						<div class="d-flex align-items-center gap-2">
+							<b>
+								<small> Old price: </small>
+							</b>
+							<small class="text-decoration-line-through">
+								<b class="text-danger">${{ object.last_price }}</b>
+							</small>
+						</div>
+						{% endif %}
+						<div class="d-flex align-items-center gap-2">
+							<b>
+								<small>Current price: </small>
+							</b>
+							<small class="">
+								<b class="text-success">${{ object.current_price }}</b>
+							</small>
+						</div>
+					</div>
+					<form action="{% url 'products:change_cart_quantity' %}" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="product_id" value="{{ object.pk }}">
+						<input type="hidden" name="quantity" value="1">
+						<button
+						type="submit"
+						class="mt-2 w-100 d-flex align-items-center justify-content-center font-bold btn btn-warning"
+					>
+						<i class="bi bi-cart-plus"></i>
+						Add to cart
+					</button>
+					</form>
+					
+				</div>
+			</div>
+		{% empty %}
+			<h1>There is not Products</h1>
+		{% endfor %}
+	</div>
+	<div class="d-flex justify-content-center mt-5">
+		<nav aria-label="...">
+			{% include 'components/pagination.html' %}
+		</nav>
+	</div>
+</main>
+
+{% endblock content %}

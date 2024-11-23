@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+<main class="">
+	<div class="container m-auto mt-5 row gap-2 justify-content-center">
+		{% for object in objects %}
+			<div class="card col-3 p-0">
+				<img
+					class="card-img-top"
+					src="{{ object.image.url }}"
+					alt="Card image cap"
+				/>
+				<div class="card-body">
+					<h3>
+						<a class="text-decoration-none" href="{% url 'products:products' %}?category={{ object.name }}"
+							>{{ object.name }}</a
+						>
+					</h3>
+					<p class="card-text">
+						{{ object.description }}
+					</p>
+					<div class="d-flex flex-column gap-2"></div>
+				</div>
+			</div>
+
+		{% empty %}
+			
+			<h1>There are no categories</h1>
+
+		{% endfor %}
+
+	</div>
+
+	<div class="d-flex justify-content-center mt-5">
+		{% include 'components/pagination.html' %}
+	</div>
+</main>
+
+{% endblock content %}

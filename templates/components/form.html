@@ -1,0 +1,53 @@
+<form action="" method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div data-mdb-input-init class="form-outline mb-4">
+            <input
+                type="{{ field.field.widget.input_type }}"
+                id="form1Example13"
+                class="text-light form-control form-control-lg"
+                required=""
+                name="{{ field.name }}"
+                placeholder="{{ field.widget.placeholder }}"
+            />
+            <label class="text-light form-label" for="form1Example13"
+                >{{ field.label }}</label
+            >
+        </div>
+    {% endfor %}
+
+    <button
+        type="submit"
+        data-mdb-button-init
+        data-mdb-ripple-init
+        class="btn btn-primary btn-lg btn-block"
+    >
+        Sign up
+    </button>
+
+    <div
+        class="divider d-flex align-items-center my-4 d-flex justify-content-center"
+    >
+        <p class="text-light text-center fw-bold mx-3 mb-0">OR</p>
+    </div>
+
+    <a
+        data-mdb-ripple-init
+        class="btn btn-primary btn-lg btn-block"
+        style="background-color: #3b5998"
+        href="#!"
+        role="button"
+    >
+        <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
+    </a>
+    <a
+        data-mdb-ripple-init
+        class="btn btn-primary btn-lg btn-block"
+        style="background-color: #55acee"
+        href="#!"
+        role="button"
+    >
+        <i class="fab fa-twitter me-2"></i>Continue with Twitter</a
+    >
+</form>

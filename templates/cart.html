@@ -1,0 +1,248 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+<main class="vh-100 bg-body-tertiary">
+	<div class="container m-auto mt-5 row gap-2 justify-content-center">
+		<h1 class="d-flex justify-content-center">Checkout</h1>
+		<section class="h-100 gradient-custom">
+			<div class="container py-2">
+				<div class="row d-flex justify-content-center my-4">
+					<div class="col-md-8">
+						<div class="card mb-4">
+							<div class="card-header py-3">
+								<h5 class="mb-0">Cart - {{ objects.count }} items</h5>
+							</div>
+							<div class="card-body">
+								{% for object in objects %}
+									<div class="row">
+										<div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+											<div
+												class="bg-image hover-overlay hover-zoom ripple rounded"
+												data-mdb-ripple-color="light"
+											>
+												<img
+													src="{{ object.product.image.url }}"
+													class="w-100"
+													alt="Blue Jeans Jacket"
+												/>
+												<a href="{% url 'products:product_detail' pk=object.product.pk %}">
+													<div
+														class="mask"
+														style="background-color: rgba(251, 251, 251, 0.2)"
+													></div>
+												</a>
+											</div>
+										</div>
+
+										<div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+											<!-- Data -->
+											<p><strong>{{ object.product.name }}</strong></p>
+											<p>{{ object.product.description }}</p>
+											<form action="{% url 'products:change_cart_quantity' %}" method="post">
+												{% csrf_token %}
+												<input type="hidden" name="product_id" value="{{ object.product.id }}">
+												<input type="hidden" name="quantity" value="-{{ object.quantity }}">
+												<button
+													type="submit"
+													data-mdb-button-init
+													data-mdb-ripple-init
+													class="btn btn-primary btn-sm me-1 mb-2"
+													data-mdb-tooltip-init
+													title="Remove item"
+												>
+													<i class="fas fa-trash"></i>
+												</button>
+											</form>
+											
+											
+											<!-- Data -->
+										</div>
+
+										<form action="{% url 'products:set_cart_quantity' %}" method="post" class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+											{% csrf_token %}
+											<input type="hidden" name="product_id" value="{{ object.product.pk }}">
+											<input type="hidden" name="next" value="{{ request.path }}">
+											<!-- Quantity -->
+											<div class="d-flex mb-4" style="max-width: 300px">
+												<button
+													id="btn"
+													data-mdb-button-init
+													data-mdb-ripple-init
+													type="button"
+													class="btn btn-primary px-3 me-2 minus">
+													<i class="fas fa-minus"></i>
+												</button>
+
+												<div data-mdb-input-init class="form-outline">
+													<input
+														id="form1"
+														min="0"
+														name="quantity"
+														value="1"
+														type="number"
+														class="form-control"
+													/>
+													<label class="form-label" for="form1"
+														>Quantity</label
+													>
+												</div>
+
+												<button
+													id="btn"
+													data-mdb-button-init
+													data-mdb-ripple-init
+													type="button"
+													class="btn btn-primary px-3 ms-2 plus">
+													<i class="fas fa-plus"></i>
+												</button>
+											</div>
+											<!-- Quantity -->
+
+											<!-- Price -->
+											<p class="text-start text-md-center">
+												<strong>$17.99</strong>
+											</p>
+											<!-- Price -->
+										</form>
+									</div>
+
+									<hr class="my-4" />
+								{% endfor %}
+							</div>
+						</div>
+						<div class="card mb-4">
+							<div class="card-body">
+								<p><strong>Expected shipping delivery</strong></p>
+								<p class="mb-0">12.10.2020 - 14.10.2020</p>
+							</div>
+						</div>
+						<div class="card mb-4 mb-lg-0">
+							<div class="card-body">
+								<p><strong>We accept</strong></p>
+								<img
+									class="me-2"
+									width="45px"
+									src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+									alt="Visa"
+								/>
+								<img
+									class="me-2"
+									width="45px"
+									src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+									alt="American Express"
+								/>
+								<img
+									class="me-2"
+									width="45px"
+									src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+									alt="Mastercard"
+								/>
+								<img
+									class="me-2"
+									width="45px"
+									src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png"
+									alt="PayPal acceptance mark"
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card mb-4">
+							<div class="card-header py-3">
+								<h5 class="mb-0">Summary</h5>
+							</div>
+							<div class="card-body">
+								<ul class="list-group list-group-flush">
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0"
+									>
+										Products
+										<span>${{ total_price }}</span>
+									</li>
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center px-0"
+									>
+										Shipping
+										<span>Gratis</span>
+									</li>
+									<li
+										class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3"
+									>
+										<div>
+											<strong>Total amount</strong>
+											<strong>
+												<p class="mb-0">(including VAT)</p>
+											</strong>
+										</div>
+										<span><strong>${{ total_amount }}</strong></span>
+									</li>
+								</ul>
+
+								<button
+									type="button"
+									data-mdb-button-init
+									data-mdb-ripple-init
+									class="btn btn-primary btn-lg btn-block"
+								>
+									Go to checkout
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+<script>
+
+	const btns = document.querySelectorAll("#btn");
+
+	btn_handle = (btn, number) => {
+		btn.addEventListener("click", e => {
+			e.preventDefault()
+			
+			const btnForm = btn.parentNode.parentNode
+
+			const input = btnForm.querySelector("input[type=number]");
+			input.value -= -number
+
+			btnForm.submit()
+		})
+	} 
+
+	minus_func = btn => btn_handle(btn, -1)
+	plus_func = btn => btn_handle(btn, 1)
+
+	const function_for = {
+		"minus": minus_func,
+		"plus": plus_func
+	}
+
+	btns.forEach(
+		btn => {
+			const splited_id = btn.className.split(" ")
+			
+			if (splited_id.length < 2) {
+				console.error("id of Btn:", btn, "is invalid")
+				return;
+			}
+
+			const pl_mi = splited_id.find(element => element === "plus" || element === "minus");
+			
+			if (!pl_mi) {
+				console.error("Bad btn")
+				return;
+			}
+
+			function_for[pl_mi](btn)
+
+		}
+	)
+
+</script>
+
+{% endblock content %}

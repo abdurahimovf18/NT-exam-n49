@@ -1,0 +1,46 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block content %}
+
+<main class="vh-100 bg-body-tertiary">
+	<div class="container m-auto mt-5 row gap-2 justify-content-center">
+		<h1 class="d-flex justify-content-center mb-5">Your account</h1>
+		<div class="d-flex justify-content-center gap-5">
+			<img
+				style="max-width: 300px; max-height: 100%; border-radius: 50%"
+				src="https://cdn3.iconfinder.com/data/icons/player/128/sound-18-1024.png"
+				alt=""
+			/>
+			<div class="w-50">
+				<form action="{% url 'users:account_update' pk=request.user.pk %}" method="post">
+					<div class="d-flex flex-column gap-2">
+						{% csrf_token %}
+
+						{% for field in form %}
+							<div data-mdb-input-init class="form-outline mb-4">
+								<label 
+								class="text-dark form-label" 
+								for="form{{ forloop.counter }}Example13"
+								>{{ field.label }}</label>
+
+								<input 
+								type="{{ field.widget.attrs.type }}" 
+								name="{{ field.name }}" 
+								value="{{ field.value|default:'' }}"
+								class="w-100">
+
+							</div>
+						{% endfor %}
+						
+						<button class="btn btn-dark" type="submit">
+							Update my information
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</main>
+
+{% endblock content %}
