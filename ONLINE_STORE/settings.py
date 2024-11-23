@@ -12,10 +12,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from django.urls import reverse_lazy
+from dotenv import load_dotenv
+from os import getenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -24,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9a&%i5zlzn9x8zcw^&87*j1_(s$(&&we2y0j8@(a(f!eis8o1b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -38,6 +42,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    ##################
+    # django-allauth #
+    ##################
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+
+    ############################
+    # django-allauth providers #
+    ############################
+
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+
+    ###########
+    # my-apps #
+    ###########
+
     "users_app",
     "pages_app",
     'products_app'
@@ -51,6 +75,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    ##################
+    # django-allauth #
+    ##################
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'ONLINE_STORE.urls'
@@ -66,6 +95,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -74,13 +104,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ONLINE_STORE.wsgi.application'
 
 
+AUTHTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend'
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': getenv("GOOGLE_CLIENT_ID"),
+            'secret': getenv("GOOGLE_SECRET"),
+            # 'key': ''
+        }
+    }
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / getenv('DB_NAME'),
     }
 }
 
@@ -139,3 +186,12 @@ LOGIN_URL = reverse_lazy("users:login")
 
 REGISTER_REDIRECT_URL = reverse_lazy("users:login")
 
+SITE_ID = 1
+
+ACCOUNT_LOGIN_ON_SIGNUP = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_REDIRECT_URL = reverse_lazy("users:account")
+SOCIALACCOUNT_LOGIN_ON_GET=True

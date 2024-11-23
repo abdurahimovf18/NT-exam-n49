@@ -1,6 +1,5 @@
 {% extends 'layouts/base.html' %}
 
-
 {% block content %}
 
 <section class="vh-100 bg-dark">
@@ -43,24 +42,20 @@
 						<p class="text-light text-center fw-bold mx-3 mb-0">OR</p>
 					</div>
 
-					<a
-						data-mdb-ripple-init
-						class="btn btn-primary btn-lg btn-block"
-						style="background-color: #3b5998"
-						href="#!"
-						role="button"
-					>
-						<i class="fab fa-facebook-f me-2"></i>Continue with Facebook
-					</a>
-					<a
-						data-mdb-ripple-init
-						class="btn btn-primary btn-lg btn-block"
-						style="background-color: #55acee"
-						href="#!"
-						role="button"
-					>
-						<i class="fab fa-twitter me-2"></i>Continue with Twitter</a
-					>
+					{% load socialaccount %}
+					{% get_providers as social_providers %}
+					{% for provider in social_providers %}
+
+						<a
+							data-mdb-ripple-init
+							class="btn btn-primary btn-lg btn-block text-primary"
+							style="background-color: #ffffff"
+							href="{% provider_login_url provider.id %}"
+							role="button"
+						>
+							<i class="fab fa-google me-2 text-primary"></i>Continue with {{ provider.name }}
+						</a>
+					{% endfor %}
 				</form>
 				<div class="d-flex justify-content-center mt-3">
 					<p class="m-0 text-light">

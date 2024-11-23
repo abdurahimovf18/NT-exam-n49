@@ -12,5 +12,5 @@ urlpatterns = [
     path("set_cart_quantity", views.set_cart_quantity, name="set_cart_quantity"),
     path("categories/", views.CategoriesPageView.as_view(), name="categories"),
     path("", views.ProductsPageView.as_view(), name="products"),
-    path("<int:pk>/", views.ProductDetailPageView.as_view(), name="product_detail")
+    path("<int:pk>/", views.ProductDetailPageView.as_view(), name="product_detail"),
 ]
